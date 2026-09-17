@@ -107,6 +107,25 @@
     <p class="privacy"><strong>How this works:</strong> this page uses the open-source pdf-lib library, running entirely as JavaScript in your browser tab. Your PDF files are read locally and are never sent to any server.</p>
   </div>
 
+
+  <div class="card faq">
+    <h2>Troubleshooting</h2>
+    <details><summary>Merge or split fails with an error mentioning encryption or a password</summary>
+      <p>This page can't open a password-protected PDF. Remove the password first (Preview on Mac can do this via File &rarr; Export, or use the command-line fallback below), then retry the merge or split.</p>
+    </details>
+    <details><summary>The merged PDF is missing fillable form fields</summary>
+      <p>Page content merges faithfully, but interactive AcroForm fields from the source PDFs can sometimes flatten or behave differently once combined. If your workflow depends on fillable fields surviving a merge, check the result carefully before relying on it.</p>
+    </details>
+  </div>
+
+  <div class="card cli">
+    <h2>Prefer the command line?</h2>
+    <div class="cli-block">pdftk in1.pdf in2.pdf cat output merged.pdf   # merge
+qpdf --split-pages in.pdf page_%d.pdf         # split</div>
+    <p class="privacy"><code>pdftk</code> and <code>qpdf</code> are both free, open-source PDF command-line tools available for Windows, Mac, and Linux.</p>
+  </div>
+
+
   <div id="ad-slot" data-aads-unit="2455557"></div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
