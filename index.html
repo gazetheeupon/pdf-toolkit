@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free PDF Merge & Split Tool — Private, In-Browser, No Upload</title>
+<meta name="description" content="Merge multiple PDFs into one, or split a PDF into individual pages, for free, entirely in your browser. No upload, no account, no watermark.">
+<style>
+  :root{--bg:#0f1720;--card:#1a2532;--text:#e8edf2;--muted:#93a3b3;--accent:#4fa8ff;--border:#2a3745;}
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;}
+  header{padding:2rem 1rem 1rem;text-align:center;}
+  h1{font-size:1.6rem;margin:0 0 .4rem;}
+  p.sub{color:var(--muted);margin:0;max-width:640px;margin:0 auto;}
+  main{max-width:780px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;}
+  .tabs{display:flex;gap:.5rem;margin-bottom:1rem;}
+  .tab{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:.6rem 1.2rem;cursor:pointer;font-size:.95rem;}
+  .tab.active{background:var(--accent);color:#04121f;border-color:var(--accent);font-weight:600;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .dropzone{border:2px dashed var(--border);border-radius:10px;padding:2.2rem 1rem;text-align:center;cursor:pointer;transition:border-color .15s;}
+  .dropzone.drag{border-color:var(--accent);}
+  .dropzone input{display:none;}
+  .dropzone .hint{color:var(--muted);font-size:.9rem;margin-top:.4rem;}
+  ul#fileList, ul#splitList{list-style:none;padding:0;margin:1rem 0 0;}
+  ul#fileList li, ul#splitList li{display:flex;justify-content:space-between;align-items:center;background:#0d151d;border:1px solid var(--border);border-radius:8px;padding:.5rem .8rem;margin-bottom:.4rem;font-size:.9rem;}
+  ul#fileList li button{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:1rem;}
+  button{background:var(--accent);color:#04121f;border:none;border-radius:8px;padding:.7rem 1.4rem;font-size:1rem;font-weight:600;cursor:pointer;}
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  button.secondary{background:transparent;border:1px solid var(--border);color:var(--text);}
+  .row{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin-top:1rem;}
+  #status,#statusSplit{color:var(--muted);font-size:.9rem;margin-top:.6rem;min-height:1.2em;}
+  a.dl{color:var(--accent);}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:1.5rem 1rem 2.5rem;}
+  footer a{color:var(--accent);}
+  .privacy{font-size:.85rem;color:var(--muted);}
+  .privacy strong{color:var(--text);}
+</style>
+<link rel="canonical" href="https://gazetheeupon.github.io/pdf-toolkit/">
+<meta property="og:title" content="Free PDF Merge & Split Tool">
+<meta property="og:description" content="Merge multiple PDFs into one, or split a PDF into individual pages, for free, entirely in your browser. No upload, no account, no watermark.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://gazetheeupon.github.io/pdf-toolkit/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Free PDF Merge & Split Tool">
+<meta name="twitter:description" content="Merge multiple PDFs into one, or split a PDF into individual pages, for free, entirely in your browser. No upload, no account, no watermark.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Free PDF Merge & Split Tool",
+  "url": "https://gazetheeupon.github.io/pdf-toolkit/",
+  "description": "Merge multiple PDFs into one, or split a PDF into individual pages, for free, entirely in your browser. No upload, no account, no watermark.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (runs in web browser)",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>Free PDF Merge &amp; Split</h1>
+  <p class="sub">Combine PDFs into one file, or split one PDF into individual pages. Everything happens locally in your browser &mdash; nothing is uploaded.</p>
+</header>
+<main>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="tabMerge">Merge PDFs</button>
+      <button class="tab" id="tabSplit">Split PDF</button>
+    </div>
+
+    <div class="panel active" id="panelMerge">
+      <div class="dropzone" id="dropzoneMerge">
+        <div>Drop PDF files here, or click to choose files</div>
+        <div class="hint">Add two or more PDFs. Drag list items to reorder is not supported yet &mdash; files merge in the order added.</div>
+        <input type="file" id="fileInputMerge" accept="application/pdf" multiple>
+      </div>
+      <ul id="fileList"></ul>
+      <div class="row">
+        <button id="mergeBtn" disabled>Merge &amp; Download</button>
+      </div>
+      <div id="status"></div>
+    </div>
+
+    <div class="panel" id="panelSplit">
+      <div class="dropzone" id="dropzoneSplit">
+        <div>Drop a PDF here, or click to choose a file</div>
+        <div class="hint">Splits every page into its own downloadable PDF.</div>
+        <input type="file" id="fileInputSplit" accept="application/pdf">
+      </div>
+      <div class="row">
+        <button id="splitBtn" disabled>Split PDF</button>
+        <button id="downloadAllSplitBtn" class="secondary" style="display:none;">Download all pages</button>
+      </div>
+      <div id="statusSplit"></div>
+      <ul id="splitList"></ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="privacy"><strong>How this works:</strong> this page uses the open-source pdf-lib library, running entirely as JavaScript in your browser tab. Your PDF files are read locally and are never sent to any server.</p>
+  </div>
+
+  <div id="ad-slot"></div>
+</main>
+<footer>
+  Free, ad-supported, no signup. Built with <a href="https://github.com/Hopding/pdf-lib" target="_blank" rel="noopener">pdf-lib</a> (MIT).
+<div style="margin-top:.6rem;">&copy; 2026 GazeTheeUpon. All rights reserved. <a href="LICENSE" style="color:inherit;">Source license</a> &mdash; view-source friendly, redistribution not permitted.</div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
